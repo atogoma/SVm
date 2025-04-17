@@ -58,9 +58,9 @@ def get_breakpoint_from_sa(reads, way, target_chr, flag):
     if flag == 0:
         for read in reads:
             sa_info = extract_sa_positions(read, target_chr)
-            if sa_info != []:
-                print(sa_info)
-                print(read.query_sequence)
+            # if sa_info != []:
+            #     print(sa_info)
+            #     print(read.query_sequence)
             for chrom, pos, op_type, op_len in sa_info:
                 if chrom == target_chr:
                     # 根据CIGAR第一个操作符调整断点位置
@@ -114,12 +114,9 @@ def process_single_row(row, bam_path, header_indices, window):
                 flag = or_start
             bp1_np = get_breakpoint_from_sa(reads_bp1, or_start, chr_end, flag)
             homolen1,homoseq1 = generate_consensus(reads_bp1, chr_end, bp1_np, 'left')
-            print(chr_start,chr_end)
-            print(bp1_np)
             
             bp2_np = get_breakpoint_from_sa(reads_bp2, or_end, chr_start, flag)
             homolen2,homoseq2 = generate_consensus(reads_bp2, chr_start, bp2_np, 'right')
-            print(bp2_np)
             homolen = mergeh(homolen1, homolen2)            
             if homolen == homolen1:
                 homoseq = homoseq1
