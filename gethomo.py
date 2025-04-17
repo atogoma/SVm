@@ -64,10 +64,10 @@ def get_breakpoint_from_sa(reads, way, target_chr, flag):
             for chrom, pos, op_type, op_len in sa_info:
                 if chrom == target_chr:
                     # 根据CIGAR第一个操作符调整断点位置
-                    if op_type == 'S' and way == 1:
+                    if op_type == 'S':
                         adjusted_pos = pos  # 软剪接，断点在pos
                         pos_counts[adjusted_pos] += 1
-                    if op_type == 'M' and way == -1:
+                    if op_type == 'M':
                         adjusted_pos = pos + op_len  # 匹配，断点在pos + op_len
                         pos_counts[adjusted_pos] += 1
     
@@ -93,9 +93,8 @@ def process_single_row(row, bam_path, header_indices, window):
     """处理单行数据的函数，用于多进程"""
     try:
         sv_type = row[header_indices["sv_type"]]
-        if sv_type not in {"TRA"}:
+        if sv_type not in {"DEL", "INV", "DUP", "TRA"}:
             return None
-        # 提取坐标"DEL", "INV", "DUP", 
         chr_start = row[header_indices["chr_start"]]
         chr_end = row[header_indices["chr_end"]]
         pos_start = int(row[header_indices["pos_start"]])
